@@ -1,0 +1,18 @@
+{
+    "files.associations": {
+        "stdlib.h": "c",
+        "string.h": "c",
+        "stm8s.h": "c",
+        "stm8_cc1101h": "c",
+        "stdint.h": "c",
+        "stdio.h": "c",
+        "spi.h": "c",
+        "gpio.h": "c",
+        "stm8_cc1101.h": "c",
+        "delay.h": "c",
+        "timer.h": "c",
+        "sdcc-lib.h": "c",
+        "vscode_sdcc_defs.h": "c",
+        "features.h": "c"
+    }
+}

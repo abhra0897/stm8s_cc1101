@@ -1,0 +1,107 @@
+# This make file is included in and called from another makefile
+# Important: Paths and Dirs are relative to the calling makefile!
+
+TARGET ?= main
+
+# toolchain
+TOOLCHAIN_PREFIX=sdcc
+
+CC=$(TOOLCHAIN_PREFIX)
+LD=sdld
+AS=sdasstm8
+OBJCOPY=sdobjcopy
+
+PROGRAMMER = stlinkv2
+DEVICE = stm8s003f3
+MCU = stm8
+F_CPU = 16000000
+MCFLAGS = -m$(MCU)
+
+################## Paths/Dirs relative to the includer makefile ####################
+#### if includer makefile provides no path, these paths will be used
+LIBRARY_PATH ?= ../../lib
+BUILD_DIR ?= build
+SRC_DIR ?= src
+#### fixed dir name
+LIB_SRC_DIR = $(LIBRARY_PATH)/src
+
+
+################## User Sources ####################
+
+#### User's source files (comes from includer makefile)
+SRCS ?= 
+
+#### Library source files (in LIBRARY_PATH)
+LIB_SRCS = uart.c
+LIB_SRCS += timer.c
+LIB_SRCS += spi.c
+LIB_SRCS += stm8_cc1101.c
+
+
+################## Objects ####################
+
+#### Automatically generate .rel names based on SRCS and LIB_SRCS
+OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.rel)
+OBJS += $(LIB_SRCS:%.c=$(BUILD_DIR)/%.rel)
+
+
+################## Includes ########################
+INCLS = -I. -Iinc -I$(LIBRARY_PATH)/inc
+
+################## Libs ########################
+LDFLAGS =	-lstm8 --out-fmt-ihx
+LDFLAGS += $(MCFLAGS)
+
+################ Compiler Flags ######################
+CFLAGS = --std-sdcc11
+CFLAGS += $(MCFLAGS)
+CFLAGS += -DF_CPU=$(F_CPU)UL
+CFLAGS += --stack-auto --noinduction --use-non-free
+############# CFLAGS for Optimization ##################
+#CFLAGS += -v #verbose
+
+
+################### Recipe to make all (build and burn) ####################
+.PHONY: all
+all: $(BUILD_DIR)/$(TARGET).hex size
+	
+
+################### Recipe to burn ####################
+.PHONY: burn
+burn:
+	@echo "[Flashing] build/$(TARGET).hex"
+	@stm8flash -c $(PROGRAMMER) -p $(DEVICE) -w $(BUILD_DIR)/$(TARGET).hex
+		
+
+################### Recipe to make .hex ####################
+$(BUILD_DIR)/$(TARGET).hex: $(OBJS)
+	@echo "[Linking] $@"
+	@$(CC) $(LDFLAGS)  $^ -o $@
+
+
+################### Recipe to make .rel ####################
+
+######### Make rel for user srcs #########
+$(BUILD_DIR)/%.rel: $(SRC_DIR)/%.c
+	@echo "[Building] $@"
+	@$(CC) $(INCLS) $(CFLAGS) -c -o $@ $<
+
+######### Make rel for lib srcs #########
+$(BUILD_DIR)/%.rel: $(LIB_SRC_DIR)/%.c
+	@echo "[Building] $@"
+	@$(CC) $(INCLS) $(CFLAGS) -c -o $@ $<
+
+
+################### Recipe to get size ####################
+size:
+	@$(OBJCOPY) -I ihex --output-target=binary $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
+	@echo "----------"
+	@echo "Image size:"
+	@stat -L -c %s $(BUILD_DIR)/$(TARGET).bin
+
+################### Recipe to clean all ####################
+.PHONY: clean
+clean:
+	@echo "[Cleaning]"
+#	@ls $(BUILD_DIR)
+	@rm -rf $(BUILD_DIR)/*

@@ -1,0 +1,27 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "intelliSenseMode": "gcc-arm",
+            "includePath": [
+                ".",
+                "lib/inc",
+                "/usr/local/share/sdcc/include"
+            ],
+            "defines": ["F_CPU=16000000UL", 
+                "__SDCC", 
+                "STM8S003",
+                "__interrupt(vector_num)=",
+                ""
+            ],
+            "compilerPath": "/usr/local/bin/sdcc",
+            "compilerArgs": [
+                "-mstm8",
+                ""
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++14"
+        }
+    ],
+    "version": 4
+}
