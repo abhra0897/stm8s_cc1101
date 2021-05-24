@@ -2,9 +2,7 @@
 #include "timer.h"
 
 uint8_t Tx_fifo[FIFOBUFFER], Rx_fifo[FIFOBUFFER];
-uint8_t My_addr, Tx_addr, Rx_addr, Pktlen, Lqi, Rssi;
-uint8_t rx_addr, sender, lqi;
-int8_t rssi_dbm;
+uint8_t My_addr, Rx_addr, Pktlen;
 
 
 void main(void)
@@ -22,6 +20,8 @@ void main(void)
     //-------------------[CC1101 RELATED OPERATIONS]-----------------------
 
     // init CC1101 RF-module
+    My_addr = 0x00;                                              // address of this device (tx)
+    Rx_addr = 0x10;                                              //receiver address
     cc1101_begin(&My_addr);                   //inits RF module with main default settings
 
     cc1101_sidle();                          //set to ILDE first
@@ -34,11 +34,10 @@ void main(void)
     cc1101_show_register_settings();         //shows current CC1101 register values
     cc1101_receive();                        //set to RECEIVE mode
 
-    uart_println("CC1101 TX Demo for MSP430");   //welcome message
+    uart_println("CC1101 TX Demo for STM8S");   //welcome message
 
     while (1)
     {
-        Rx_addr = 0x10;                                              //receiver address
 
         uint32_t time_stamp = timer_get_ms_tick();                       //generate time stamp
 

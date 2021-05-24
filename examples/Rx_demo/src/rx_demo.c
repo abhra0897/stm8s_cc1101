@@ -5,7 +5,7 @@
 uint32_t rf_timecode = 0;
 //--------------------------[Global CC1100 variables]------------------------
 uint8_t Tx_fifo[FIFOBUFFER], Rx_fifo[FIFOBUFFER];
-uint8_t My_addr, Tx_addr, Rx_addr, Pktlen, pktlen, Lqi, Rssi;
+uint8_t My_addr, pktlen;
 uint8_t rx_addr,sender,lqi;
 int8_t rssi_dbm;
 volatile uint8_t is_packet_available;
@@ -24,6 +24,7 @@ void main(void)
 	//-------------------------------[end]---------------------------------
 
 	// init CC1101 RF-module
+	My_addr = 0x10;
 	cc1101_begin(&My_addr);                   //inits RF module with main default settings
 
 	cc1101_sidle();                          //set to ILDE first
@@ -31,7 +32,7 @@ void main(void)
     cc1101_set_ISM(0x02);                    //set frequency 1=315MHz; 2=433MHz; 3=868MHz; 4=915MHz
     cc1101_set_channel(0x01);                //set channel
     cc1101_set_output_power_level(0);        //set PA level in dbm
-    cc1101_set_myaddr(0x00);                 //set my own address
+    cc1101_set_myaddr(My_addr);                 //set my own address
 
 	/* See Page 62 of 98 in cc1101 datasheet */
 	/* Asserts when sync word has been sent / received, 
@@ -42,7 +43,7 @@ void main(void)
 	cc1101_show_register_settings();         //shows current CC1101 register values
 	cc1101_receive();                        //set to RECEIVE mode
 
-	uart_println("CC1101 RX Demo for MSP430");   //welcome message
+	uart_println("CC1101 RX Demo for STM8S");   //welcome message
 
 	while (1)
 	{
