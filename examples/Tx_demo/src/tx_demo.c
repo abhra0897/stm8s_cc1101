@@ -47,7 +47,7 @@ void main(void)
         Tx_fifo[6] = (uint8_t)(time_stamp);
 
         Pktlen = 0x07;                                               //set packet len to 0x13
-        cc1101_send_packet(My_addr, Rx_addr, Tx_fifo, Pktlen, 4);   //sents package over air. ACK is received via GPIO polling    
+        cc1101_send_packet(My_addr, Rx_addr, Tx_fifo, Pktlen, 40);   //sents package over air. ACK is received via GPIO polling    
 
         timer_delay_ms(1000);
     }

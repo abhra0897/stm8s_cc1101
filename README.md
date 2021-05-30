@@ -22,7 +22,7 @@ This is inspired by SpaceTeddy's CC1101-Arduino library, since that one is popul
 6. To compile, run `make`. To burn, run `make burn`. To clean, `make clean`
 
 
-#### Supported Launchpads/MCUs
+#### Supported MCUs
 - STM8S003
 - STM8S103
 

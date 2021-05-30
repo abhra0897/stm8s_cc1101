@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#define MINIMAL_MODE    1
+#define MINIMAL_MODE    0
 static uint8_t cc1101_debug_level = 1;
 
 //-------------------[global default settings 868 Mhz]-------------------
@@ -430,7 +430,7 @@ uint8_t cc1101_begin(uint8_t *My_addr)
     #endif
 
     //default settings
-    *My_addr = 0x00;
+    //*My_addr = 0x00;
     CC1101_freq_select = 0x02;    //433.92MHz
     CC1101_mode_select = 0x01;    //gfsk 1.2kbps
     CC1101_channel_select = 0x01;
